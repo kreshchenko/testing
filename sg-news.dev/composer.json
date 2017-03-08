@@ -1,6 +1,7 @@
 {
     "name": "root/sg-news.dev",
     "require": {
+        "monolog/monolog": "dev-master",
         "simplepie/simplepie": "dev-master",
         "symfony/http-foundation": "dev-master"
     },

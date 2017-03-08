@@ -1,7 +1,27 @@
 <?php
     require_once '../models/SgNews.php';
     require_once '../vendor/autoload.php';
-    $news = SgNews::getNews();
+
+
+    if (isset($_GET['from']))
+    {
+      $from = $_GET['from'];
+      if (isset($_GET['per_page'])){
+        $newsPerPage = $_GET['per_page'];
+      } else {
+        $newsPerPage = 10;
+      }
+    } else {
+      $from = 0;
+      if (isset($_GET['per_page'])){
+        $newsPerPage = $_GET['per_page'];
+      } else {
+        $newsPerPage = 10;
+      }
+    } 
+
+      $totalNewsNumber = SgNews::getKilNews();
+      $news = SgNews::getNewsFrom($from,$newsPerPage);
 ?>
 
 <!DOCTYPE html>
@@ -17,12 +37,21 @@
   </head>
   <body>
     <div class="container">
-		<div class="col-lg-8">
+
+		<div class="col-lg-12">
 			<h1>Лента новостей</h1>
+      <br>
+      <!--<select onchange="window.location.href=this.options[this.selectedIndex].value">
+        <option VALUE="/index.php?per_page=10">10</option>
+        <option VALUE="/index.php?per_page=25">25</option>
+        <option VALUE="/index.php?per_page=50">50</option>
+        <option VALUE="/index.php?per_page=10">100</option>
+      </select>-->
 		</div>
     <?php
       foreach ($news as $some):
     ?>
+    
     <div class="col-lg-8">
       <div class="col-lg-12">
         <h3>
@@ -34,6 +63,18 @@
     </div>
     <?php
       endforeach;
+    
+      $totalPages = ceil($totalNewsNumber/$newsPerPage);
+      for ($i=0; $i<$totalPages; $i++){
+        $pageNumber = $i*$newsPerPage;
+        if ($pageNumber != $from){
+          echo "<a href='".$_SERVER['PHP_SELF']."?from=".$pageNumber."&per_page=".$newsPerPage."'>".($i+1)."</a>";
+        } else {
+          echo $i+1;
+        }
+      }
+      
+
     ?>
 	</div>
 
@@ -43,7 +84,6 @@
     <script src="js/bootstrap.min.js"></script>
   </body>
 </html>
-
 
 
 
